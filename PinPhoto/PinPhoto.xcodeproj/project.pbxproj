@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		073B804F2FCA0209005115BA /* RecordEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073B804E2FCA0209005115BA /* RecordEditView.swift */; };
 		076190072FC45CA400CBED3C /* PinPhotoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076190062FC45CA400CBED3C /* PinPhotoApp.swift */; };
 		076190092FC45CA400CBED3C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076190082FC45CA400CBED3C /* ContentView.swift */; };
 		0761900B2FC45CA500CBED3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0761900A2FC45CA500CBED3C /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		073B804E2FCA0209005115BA /* RecordEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordEditView.swift; sourceTree = "<group>"; };
 		076190032FC45CA400CBED3C /* PinPhoto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PinPhoto.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		076190062FC45CA400CBED3C /* PinPhotoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinPhotoApp.swift; sourceTree = "<group>"; };
 		076190082FC45CA400CBED3C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -39,7 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				076190052FC45CA400CBED3C /* PinPhoto */,
-				076190042FC45CA400CBED3C /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -49,6 +50,7 @@
 				076190032FC45CA400CBED3C /* PinPhoto.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		076190052FC45CA400CBED3C /* PinPhoto */ = {
@@ -60,6 +62,8 @@
 				0761900F2FC45CA500CBED3C /* Info.plist */,
 				0761900C2FC45CA500CBED3C /* Preview Content */,
 				076190152FC45FBF00CBED3C /* LocationManager.swift */,
+				073B804E2FCA0209005115BA /* RecordEditView.swift */,
+				076190042FC45CA400CBED3C /* Products */,
 			);
 			path = PinPhoto;
 			sourceTree = "<group>";
@@ -144,6 +148,7 @@
 				076190092FC45CA400CBED3C /* ContentView.swift in Sources */,
 				076190072FC45CA400CBED3C /* PinPhotoApp.swift in Sources */,
 				076190162FC45FBF00CBED3C /* LocationManager.swift in Sources */,
+				073B804F2FCA0209005115BA /* RecordEditView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
