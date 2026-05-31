@@ -7,14 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		073B804F2FCA0209005115BA /* RecordEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073B804E2FCA0209005115BA /* RecordEditView.swift */; };
 		076190072FC45CA400CBED3C /* PinPhotoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076190062FC45CA400CBED3C /* PinPhotoApp.swift */; };
 		076190092FC45CA400CBED3C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076190082FC45CA400CBED3C /* ContentView.swift */; };
 		0761900B2FC45CA500CBED3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0761900A2FC45CA500CBED3C /* Assets.xcassets */; };
 		0761900E2FC45CA500CBED3C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0761900D2FC45CA500CBED3C /* Preview Assets.xcassets */; };
 		076190162FC45FBF00CBED3C /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076190152FC45FBF00CBED3C /* LocationManager.swift */; };
+		076589652FCC788600404F68 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076589642FCC788600404F68 /* ImagePicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		073B804E2FCA0209005115BA /* RecordEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordEditView.swift; sourceTree = "<group>"; };
 		076190032FC45CA400CBED3C /* PinPhoto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PinPhoto.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		076190062FC45CA400CBED3C /* PinPhotoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinPhotoApp.swift; sourceTree = "<group>"; };
 		076190082FC45CA400CBED3C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -22,6 +25,7 @@
 		0761900D2FC45CA500CBED3C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		0761900F2FC45CA500CBED3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		076190152FC45FBF00CBED3C /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		076589642FCC788600404F68 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,7 +43,6 @@
 			isa = PBXGroup;
 			children = (
 				076190052FC45CA400CBED3C /* PinPhoto */,
-				076190042FC45CA400CBED3C /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -49,6 +52,7 @@
 				076190032FC45CA400CBED3C /* PinPhoto.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		076190052FC45CA400CBED3C /* PinPhoto */ = {
@@ -60,6 +64,9 @@
 				0761900F2FC45CA500CBED3C /* Info.plist */,
 				0761900C2FC45CA500CBED3C /* Preview Content */,
 				076190152FC45FBF00CBED3C /* LocationManager.swift */,
+				073B804E2FCA0209005115BA /* RecordEditView.swift */,
+				076190042FC45CA400CBED3C /* Products */,
+				076589642FCC788600404F68 /* ImagePicker.swift */,
 			);
 			path = PinPhoto;
 			sourceTree = "<group>";
@@ -143,7 +150,9 @@
 			files = (
 				076190092FC45CA400CBED3C /* ContentView.swift in Sources */,
 				076190072FC45CA400CBED3C /* PinPhotoApp.swift in Sources */,
+				076589652FCC788600404F68 /* ImagePicker.swift in Sources */,
 				076190162FC45FBF00CBED3C /* LocationManager.swift in Sources */,
+				073B804F2FCA0209005115BA /* RecordEditView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,9 +282,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"PinPhoto/Preview Content\"";
+				DEVELOPMENT_TEAM = 8TD2L52YQT;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PinPhoto/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -294,9 +304,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"PinPhoto/Preview Content\"";
+				DEVELOPMENT_TEAM = 8TD2L52YQT;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PinPhoto/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
