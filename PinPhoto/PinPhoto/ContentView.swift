@@ -12,6 +12,9 @@ struct ContentView: View {
     
     @State private var isShowingEditSheet = false
     
+    @StateObject var viewModel = PinPhotoViewModel()
+    @State private var isRecordViewPresented = false
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             // 전체 화면을 차지하는 지도
@@ -45,7 +48,7 @@ struct ContentView: View {
         }
         //  하단 시트 모달 연동
         .sheet(isPresented: $isShowingEditSheet) {
-            RecordEditView() //  올라올 화면 연결
+            RecordEditView(viewModel: viewModel) //  올라올 화면 연결
         }
     }
 }
