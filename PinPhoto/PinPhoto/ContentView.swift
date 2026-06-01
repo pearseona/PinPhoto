@@ -16,6 +16,8 @@ struct ContentView: View {
     // 하단 시트 팝업창 제어 변수
     @State private var isShowingEditSheet = false
     
+    @State private var isInitialRegionSet = false
+    
     let deepOceanBlue = Color(red: 26/255, green: 75/255, blue: 143/255)
     
     var body: some View {
@@ -34,8 +36,12 @@ struct ContentView: View {
             }
                 .onReceive(locationManager.$location) { newLocation in
                     if let coordinate = newLocation?.coordinate {
-                        withAnimation {
-                            region.center = coordinate
+                        if !isInitialRegionSet {
+                            withAnimation(.easeInOut) {
+                                region.center = coordinate
+                            }
+                            isInitialRegionSet = true
+                            print(" [GPS 동기화] 유저의 현재 위치로 지도를 성공적으로 매칭했습니다: \(coordinate.latitude), \(coordinate.longitude)")
                         }
                     }
                 }
@@ -61,7 +67,11 @@ struct ContentView: View {
         }
         //  하단 시트 모달 연동
         .sheet(isPresented: $isShowingEditSheet) {
-            RecordEditView(viewModel: viewModel) //  올라올 화면 연결
-        }
-    }
+            RecordEditView(
+                viewModel: viewModel,
+                currentCoordinate: locationManager.location?.coordinate
+        )
+      }
+   }
 }
+
