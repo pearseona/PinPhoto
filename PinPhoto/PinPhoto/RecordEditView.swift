@@ -4,8 +4,9 @@ struct RecordEditView: View {
     
     // 색상 : 딥 오션 블루
     let deepOceanBlue = Color(red: 26/255, green: 75/255, blue: 143/255)
-    
     let lightBlueGray = Color(red: 240/255, green: 244/255, blue: 248/255)
+    
+    @ObservedObject var viewModel: PinPhotoViewModel
     
     // 하단 창 닫기
     @Environment(\.presentationMode) private var presentationMode
@@ -86,6 +87,19 @@ struct RecordEditView: View {
                 .foregroundColor(.secondary),
                 
                 trailing: Button("저장") {
+                    
+                    // GPS 연동 전이르모 한성대 좌표로 가상 설정
+                    let testLatitude = 37.5824
+                    let testLongitude = 127.0103
+                    
+                    viewModel.addRecord(
+                        latitude: testLatitude,
+                        longitude: testLongitude,
+                        memo: memoText,
+                        imageData: selectedImageData
+                    )
+                    
+                    // 저장 후 입력 폼 닫기
                     presentationMode.wrappedValue.dismiss()
                 }
                 .foregroundColor(deepOceanBlue)
@@ -106,6 +120,6 @@ struct RecordEditView: View {
 
 struct RecordEditView_Previews: PreviewProvider {
     static var previews: some View {
-        RecordEditView()
+        RecordEditView(viewModel: PinPhotoViewModel())
     }
 }

@@ -5,17 +5,33 @@ struct ContentView: View {
     
     @StateObject private var locationManager = LocationManager()
     
+    @StateObject var viewModel = PinPhotoViewModel()
+
+    // 지도 초기 중심 위치 설정
     @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780), // 초기값 서울
-        span: MKCoordinateSpan(latitudeDelta: 0.04, longitudeDelta: 0.04)
+        center: CLLocationCoordinate2D(latitude: 37.5824, longitude: 127.0103),
+        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
     
+    // 하단 시트 팝업창 제어 변수
     @State private var isShowingEditSheet = false
+    
+    let deepOceanBlue = Color(red: 26/255, green: 75/255, blue: 143/255)
     
     var body: some View {
         ZStack(alignment: .bottom) {
+            
             // 전체 화면을 차지하는 지도
-            Map(coordinateRegion: $region, showsUserLocation: true)
+            Map(
+                coordinateRegion: $region,
+                showsUserLocation: true,
+                annotationItems: viewModel.records
+            ) { record in
+                MapMarker(
+                    coordinate: CLLocationCoordinate2D(latitude: record.latitude, longitude: record.longitude),
+                    tint: .red
+                )
+            }
                 .onReceive(locationManager.$location) { newLocation in
                     if let coordinate = newLocation?.coordinate {
                         withAnimation {
@@ -37,7 +53,7 @@ struct ContentView: View {
                 .font(.headline)
                 .foregroundColor(.white)
                 .padding()
-                .background(Color.blue)
+                .background(deepOceanBlue)
                 .cornerRadius(15)
                 .shadow(radius: 5)
             }
@@ -45,7 +61,7 @@ struct ContentView: View {
         }
         //  하단 시트 모달 연동
         .sheet(isPresented: $isShowingEditSheet) {
-            RecordEditView() //  올라올 화면 연결
+            RecordEditView(viewModel: viewModel) //  올라올 화면 연결
         }
     }
 }

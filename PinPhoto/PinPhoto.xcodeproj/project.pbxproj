@@ -14,6 +14,8 @@
 		0761900E2FC45CA500CBED3C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0761900D2FC45CA500CBED3C /* Preview Assets.xcassets */; };
 		076190162FC45FBF00CBED3C /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076190152FC45FBF00CBED3C /* LocationManager.swift */; };
 		076589652FCC788600404F68 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076589642FCC788600404F68 /* ImagePicker.swift */; };
+		076589682FCC8B8600404F68 /* VisitRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076589672FCC8B8600404F68 /* VisitRecord.swift */; };
+		0765896A2FCC8CD100404F68 /* PinPhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076589692FCC8CD100404F68 /* PinPhotoViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		0761900F2FC45CA500CBED3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		076190152FC45FBF00CBED3C /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		076589642FCC788600404F68 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		076589672FCC8B8600404F68 /* VisitRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitRecord.swift; sourceTree = "<group>"; };
+		076589692FCC8CD100404F68 /* PinPhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinPhotoViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,8 @@
 				073B804E2FCA0209005115BA /* RecordEditView.swift */,
 				076190042FC45CA400CBED3C /* Products */,
 				076589642FCC788600404F68 /* ImagePicker.swift */,
+				076589672FCC8B8600404F68 /* VisitRecord.swift */,
+				076589692FCC8CD100404F68 /* PinPhotoViewModel.swift */,
 			);
 			path = PinPhoto;
 			sourceTree = "<group>";
@@ -148,6 +154,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				076589682FCC8B8600404F68 /* VisitRecord.swift in Sources */,
+				0765896A2FCC8CD100404F68 /* PinPhotoViewModel.swift in Sources */,
 				076190092FC45CA400CBED3C /* ContentView.swift in Sources */,
 				076190072FC45CA400CBED3C /* PinPhotoApp.swift in Sources */,
 				076589652FCC788600404F68 /* ImagePicker.swift in Sources */,
