@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation
 
 struct RecordEditView: View {
     
@@ -7,6 +8,8 @@ struct RecordEditView: View {
     let lightBlueGray = Color(red: 240/255, green: 244/255, blue: 248/255)
     
     @ObservedObject var viewModel: PinPhotoViewModel
+    
+    let currentCoordinate: CLLocationCoordinate2D?
     
     // 하단 창 닫기
     @Environment(\.presentationMode) private var presentationMode
@@ -49,7 +52,7 @@ struct RecordEditView: View {
                         isImagePickerPresented = true
                     }){
                         VStack(spacing: 10) {
-                            Image(systemName: "photo.badge.plus")
+                            Image(systemName: "plus.rectangle.on.folder")
                                 .font(.largeTitle)
                             Text("사진 추가하기")
                                 .font(.callout)
@@ -88,13 +91,12 @@ struct RecordEditView: View {
                 
                 trailing: Button("저장") {
                     
-                    // GPS 연동 전이르모 한성대 좌표로 가상 설정
-                    let testLatitude = 37.5824
-                    let testLongitude = 127.0103
+                    let targetLatitude = currentCoordinate?.latitude ?? 37.5824
+                    let targetLongitude = currentCoordinate?.longitude ?? 127.0103
                     
                     viewModel.addRecord(
-                        latitude: testLatitude,
-                        longitude: testLongitude,
+                        latitude: targetLatitude,
+                        longitude: targetLongitude,
                         memo: memoText,
                         imageData: selectedImageData
                     )
@@ -120,6 +122,6 @@ struct RecordEditView: View {
 
 struct RecordEditView_Previews: PreviewProvider {
     static var previews: some View {
-        RecordEditView(viewModel: PinPhotoViewModel())
+        RecordEditView(viewModel: PinPhotoViewModel(), currentCoordinate: nil)
     }
 }
