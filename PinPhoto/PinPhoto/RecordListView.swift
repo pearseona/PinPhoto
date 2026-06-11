@@ -18,6 +18,7 @@ struct RecordListView: View {
         } else {
             // 검색어 존재할 때
             return sorted.filter { record in
+                record.title.localizedCaseInsensitiveContains(searchText) ||
                 record.memo.localizedCaseInsensitiveContains(searchText)
             }
         }
@@ -33,7 +34,7 @@ struct RecordListView: View {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(.gray)
                     
-                    TextField("메모 키워드로 추억을 검색하세요...", text: $searchText)
+                    TextField("제목, 메모 키워드로 추억을 검색하세요...", text: $searchText)
                         .foregroundColor(.primary)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
@@ -53,6 +54,7 @@ struct RecordListView: View {
                 .padding(.top, 8)
                 .padding(.bottom, 12)
                 
+                // 리스트 렌더링
                 if filteredRecords.isEmpty {
                     Spacer()
                     VStack(spacing: 12) {
@@ -72,7 +74,7 @@ struct RecordListView: View {
                     Spacer()
                 } else {
                     // 최신순으로 정렬된 리스트 렌더링
-                    List(sortedRecords, id: \.id) { record in
+                    List(filteredRecords, id: \.id) { record in
                         RecordRowView(record: record)
                 }
                     .listStyle(PlainListStyle())

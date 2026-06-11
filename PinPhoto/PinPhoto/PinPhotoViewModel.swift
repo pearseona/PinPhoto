@@ -13,13 +13,14 @@ class PinPhotoViewModel: ObservableObject {
     }
     
     // 새로운 추억 기록을 배열에 추가하는 로직 함수
-    func addRecord(latitude: Double, longitude: Double, memo: String, imageData: Data?) {
+    func addRecord(title: String, latitude: Double, longitude: Double, memo: String, imageData: Data?) {
         
         // VisitRecord 인스턴스 생성
         let newRecord = VisitRecord(
             id: UUID(), //  고유한 식별자 자동 생성
             latitude: latitude,
             longitude: longitude,
+            title: title,
             memo: memo,
             imageData: imageData,
             date: Date() // 현재 기록하는 시점의 날짜/시간 저장

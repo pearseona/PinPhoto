@@ -28,9 +28,15 @@ struct RecordRowView: View {
             
             // 텍스트 정보 영역 (제목, 메모, 날짜)
             VStack(alignment: .leading, spacing: 4) {
-                Text(record.memo.isEmpty ? "한 줄 메모 없음" : record.memo)
+                
+                Text(record.title.isEmpty ? "제목 없음" : record.title)
                     .font(.headline)
                     .foregroundColor(.primary)
+                    .lineLimit(1)
+                
+                Text(record.memo.isEmpty ? "추가된 메모가 없습니다." : record.memo)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
                     .lineLimit(1)
                 
                 // 좌표 임시 표출 (추후 변경 예정

@@ -10,6 +10,9 @@ struct VisitRecord: Identifiable, Codable {
     let latitude: Double
     let longitude: Double
     
+    // 사용자가 입력한 메모 제목
+    let title: String
+    
     // 사용자가 입력한 한 줄 메모
     let memo: String
     

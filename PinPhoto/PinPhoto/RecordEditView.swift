@@ -23,11 +23,14 @@ struct RecordEditView: View {
     // 한 줄 메모 입력
     @State private var memoText: String = ""
     
+    // 제목 입력
+    @State private var titleText: String = ""
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 24) {
                 
-                /* --- 사진 영역 --- */
+                // 사진 영역
                 
                 // 선택된 사진 데이터가 있으면 미리보기를 보여주고, 없으면 버튼을 노출
                 if let selectedImageData = selectedImageData, let uiImage = UIImage(data: selectedImageData) {
@@ -64,7 +67,19 @@ struct RecordEditView: View {
                     }
                 }
                 
-                /* --- 메모 입력 폼 영역 --- */
+                // 제목 입력 폼 영역
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("제목")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                    
+                    TextField("추억의 제목을 입력하세요", text: $titleText)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                }
+                
+                // 메모 입력 폼 영역
                 VStack(alignment: .leading, spacing: 8) {
                     Text("메모")
                         .font(.headline)
@@ -95,6 +110,7 @@ struct RecordEditView: View {
                     let targetLongitude = currentCoordinate?.longitude ?? 127.0103
                     
                     viewModel.addRecord(
+                        title: titleText.isEmpty ? "제목 없음" : titleText,
                         latitude: targetLatitude,
                         longitude: targetLongitude,
                         memo: memoText,
@@ -108,7 +124,7 @@ struct RecordEditView: View {
                 .font(.system(size: 17, weight: .bold))
                 
                 // 사진을 고르고 메모에 최소 한 글자 이상 써야 저장 버튼 활성화
-                .disabled(memoText.isEmpty || selectedImageData == nil)
+                .disabled(titleText.isEmpty || memoText.isEmpty || selectedImageData == nil)
             )
         }
             
