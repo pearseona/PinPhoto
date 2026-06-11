@@ -4,6 +4,8 @@ struct RecordDetailView: View {
     
     let record: VisitRecord
     
+    @ObservedObject var viewModel: PinPhotoViewModel
+    
     let deepOceanBlue = Color(red: 26/255, green: 75/255, blue: 143/255)
     
     var body: some View {
@@ -23,7 +25,7 @@ struct RecordDetailView: View {
                     
                     // 사진이 없는 경우
                     VStack(spacing: 12) {
-                        Image(systemName: "photo.on.rectangle.anled")
+                        Image(systemName: "photo.on.rectangle.angled")
                             .font(.system(size: 60))
                             .foregroundColor(.gray)
                         Text("등록된 사진이 없습니다.")
@@ -67,6 +69,26 @@ struct RecordDetailView: View {
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(14)
+                
+                // 지도 바로가기 버튼 액션 파이프라인
+                Button(action: {
+                    withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                        viewModel.moveMapTo(record: record)
+                    }
+                }) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "mappin.and.ellipse")
+                        Text("지도에서 위치 확인하기")
+                            .bold()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(deepOceanBlue)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+                    .shadow(color: deepOceanBlue.opacity(0.3), radius: 4, x: 0, y: 3)
+                }
+                .padding(.top, 8)
                 
                 Spacer()
             }

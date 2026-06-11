@@ -26,6 +26,7 @@ struct RecordListView: View {
     
     
     var body: some View {
+      
         NavigationView {
             VStack(spacing: 0) {
                 
@@ -46,7 +47,6 @@ struct RecordListView: View {
                         }
                     }
                 }
-                
                 .padding(10)
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
@@ -58,7 +58,6 @@ struct RecordListView: View {
                 if filteredRecords.isEmpty {
                     Spacer()
                     VStack(spacing: 12) {
-                        
                         Image(systemName: searchText.isEmpty ? "mappin.slash.circle" : "doc.text.magnifyingglass")
                             .font(.system(size: 50))
                             .foregroundColor(.gray)
@@ -73,16 +72,15 @@ struct RecordListView: View {
                     }
                     Spacer()
                 } else {
-                    // 최신순으로 정렬된 리스트 렌더링
                     List(filteredRecords, id: \.id) { record in
-                        
-                        NavigationLink(destination: RecordDetailView(record: record)) {
+                        NavigationLink(destination: RecordDetailView(record: record, viewModel: viewModel)) {
                             RecordRowView(record: record)
                         }
-                }
+                    }
                     .listStyle(PlainListStyle())
                 }
             }
+       
             .navigationTitle("내 추억 목록")
         }
     }

@@ -1,17 +1,13 @@
-//
-//  PinPhotoApp.swift
-//  PinPhoto
-//
-//  Created by 배선아 on 2026/05/25.
-//
-
 import SwiftUI
 
 @main
 struct PinPhotoApp: App {
+    
+    @StateObject private var viewModel = PinPhotoViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(viewModel: viewModel)
         }
     }
 }

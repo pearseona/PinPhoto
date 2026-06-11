@@ -4,82 +4,71 @@ import MapKit
 struct ContentView: View {
     
     @StateObject private var locationManager = LocationManager()
-    @StateObject var viewModel = PinPhotoViewModel()
+    @ObservedObject var viewModel: PinPhotoViewModel
     @StateObject private var searchViewModel = SearchViewModel()
-
-    // 지도 초기 중심 위치 설정
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.5824, longitude: 127.0103),
-        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-    )
 
     @State private var isShowingEditSheet = false
     @State private var isInitialRegionSet = false
     @State private var trackingMode: MapUserTrackingMode = .follow
     
-    @State private var selectedTab = 0
-    
     let deepOceanBlue = Color(red: 26/255, green: 75/255, blue: 143/255)
     
     var body: some View {
         
-        TabView(selection: $selectedTab) {
+        TabView(selection: $viewModel.selectedTab) {
             
-            // 탭 1번: 기존 지도 화면
             ZStack(alignment: .bottom) {
                 
-                // 전체 화면 지도 영역
                 Map(
-                    coordinateRegion: $region,
+                    coordinateRegion: $viewModel.region,
                     showsUserLocation: true,
                     userTrackingMode: $trackingMode,
                     annotationItems: viewModel.records
                 ) { record in
                     MapMarker(
-                        coordinate: CLLocationCoordinate2D(latitude: record.latitude, longitude: record.longitude),
+                        coordinate: CLLocationCoordinate2D(
+                            latitude: record.latitude,
+                            longitude: record.longitude
+                        ),
                         tint: .red
                     )
                 }
-                    .onReceive(locationManager.$location) { newLocation in
-                        if let coordinate = newLocation?.coordinate, !isInitialRegionSet {
-                                withAnimation(.easeInOut) {
-                                    region.center = coordinate
-                                }
-                                isInitialRegionSet = true
-                                print(" [GPS 동기화] 유저의 현재 위치로 지도를 성공적으로 매칭했습니다: \(coordinate.latitude), \(coordinate.longitude)")
-                            }
+                .onReceive(locationManager.$location) { newLocation in
+                    if let coordinate = newLocation?.coordinate, !isInitialRegionSet {
+                        withAnimation(.easeInOut) {
+                            viewModel.region.center = coordinate
+                        }
+                        isInitialRegionSet = true
                     }
-       
-                    .edgesIgnoringSafeArea(.all)
+                }
+                .edgesIgnoringSafeArea(.all)
                 
-                // 상단 검색창 UI 레이어
+                // 검색창
                 VStack {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
                         
                         TextField("추억을 기록할 장소를 검색하세요...", text: $searchViewModel.searchQuery, onCommit: {
-                            
                             trackingMode = .none
-                            
-                            searchViewModel.performSearch(currentRegion: region) { targetCoordinate in
+                            searchViewModel.performSearch(currentRegion: viewModel.region) { targetCoordinate in
                                 if let coordinate = targetCoordinate {
-                                    
-                                    DispatchQueue.main.async{
+                                    DispatchQueue.main.async {
                                         withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
-                                            region.center = coordinate
-                                            region.span = MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008)
+                                            viewModel.region.center = coordinate
+                                            viewModel.region.span = MKCoordinateSpan(
+                                                latitudeDelta: 0.008,
+                                                longitudeDelta: 0.008
+                                            )
                                         }
-                                        print(" [UI 매핑] 검색 결과 위치로 지도 중심점을 이동했습니다")
                                     }
-
                                 }
                             }
                         })
                         .foregroundColor(.primary)
                         
                         if !searchViewModel.searchQuery.isEmpty {
-                            Button(action: {searchViewModel.searchQuery = "" }) {
+                            Button(action: { searchViewModel.searchQuery = "" }) {
                                 Image(systemName: "xmark.circle.fill")
                                     .foregroundColor(.gray)
                             }
@@ -94,10 +83,10 @@ struct ContentView: View {
                     
                     Spacer()
                 }
-            
-                // 하단 플로팅 버튼 영역
+                
+                // 하단 버튼
                 Button(action: {
-                    isShowingEditSheet = true // 버튼 누르면 시트 오픈
+                    isShowingEditSheet = true
                 }) {
                     HStack {
                         Image(systemName: "plus.circle.fill")
@@ -111,14 +100,14 @@ struct ContentView: View {
                     .shadow(radius: 5)
                 }
                 .padding(.bottom, 30)
+                
             }
-            tabItem {
+            .tabItem {
                 Image(systemName: "map.fill")
                 Text("지도")
             }
             .tag(0)
             
-            // 탭 2번: 새로 만든 최신순 리스트 화면 연동
             RecordListView(viewModel: viewModel)
                 .tabItem {
                     Image(systemName: "list.bullet")
@@ -126,14 +115,11 @@ struct ContentView: View {
                 }
                 .tag(1)
         }
-        
-        //  하단 시트 모달 연동
         .sheet(isPresented: $isShowingEditSheet) {
             RecordEditView(
                 viewModel: viewModel,
                 currentCoordinate: locationManager.location?.coordinate
-        )
-      }
-   }
+            )
+        }
+    }
 }
-
