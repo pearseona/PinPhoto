@@ -12,7 +12,7 @@ struct ContentView: View {
     
     @State private var trackingMode: MapUserTrackingMode = .none
     
-    let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255) 
+    let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255)
     let midnightText = Color(red: 30/255, green: 42/255, blue: 58/255)
     let iconGray = Color(red: 140/255, green: 151/255, blue: 167/255)
     let lightBlueGray = Color(red: 245/255, green: 247/255, blue: 250/255)
@@ -21,8 +21,9 @@ struct ContentView: View {
         
         TabView(selection: $viewModel.selectedTab) {
             
-            ZStack(alignment: .bottom) {
+            ZStack {
                 
+                // 지도 영역
                 Map(
                     coordinateRegion: $viewModel.region,
                     showsUserLocation: true,
@@ -47,7 +48,15 @@ struct ContentView: View {
                 }
                 .edgesIgnoringSafeArea(.all)
                 
-                // 상단 팝업 검색창
+                // 지도가 움직일 때 파란 핀도 같이 이동
+                Image(systemName: "mappin.and.ellipse")
+                    .font(.system(size: 32, weight: .semibold))
+                    .foregroundColor(deepOceanBlue)
+                    .shadow(color: Color.black.opacity(0.25), radius: 4, x: 0, y: 3)
+                   
+                    .offset(y: -14)
+                
+                // 상단 검색창 영역
                 VStack {
                     HStack {
                         Image(systemName: "magnifyingglass")
@@ -56,7 +65,6 @@ struct ContentView: View {
                         TextField("추억을 기록할 장소를 검색하세요...", text: $searchViewModel.searchQuery, onCommit: {
                             trackingMode = .none
                             searchViewModel.performSearch(currentRegion: viewModel.region) { targetCoordinate in
-                                
                                 if let coordinate = targetCoordinate {
                                     DispatchQueue.main.async {
                                         withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
@@ -89,25 +97,28 @@ struct ContentView: View {
                     Spacer()
                 }
                 
-                // 하단 버튼
-                Button(action: {
-                    isShowingEditSheet = true
-                }) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 18, weight: .bold))
-                        Text("현재 지도 위치에 기록하기")
-                            .font(.system(size: 16, weight: .bold))
+                // 하단 기록하기 버튼 영역
+                VStack {
+                    Spacer()
+                    
+                    Button(action: {
+                        isShowingEditSheet = true
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 18, weight: .bold))
+                            Text("현재 지도 위치에 기록하기")
+                                .font(.system(size: 16, weight: .bold))
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 16)
+                        .background(deepOceanBlue)
+                        .cornerRadius(28)
+                        .shadow(color: deepOceanBlue.opacity(0.3), radius: 8, x: 0, y: 4)
                     }
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 28)
-                    .padding(.vertical, 16)
-                    .background(deepOceanBlue)
-                    .cornerRadius(28)
-                    .shadow(color: deepOceanBlue.opacity(0.3), radius: 8, x: 0, y: 4)
+                    .padding(.bottom, 30)
                 }
-                .padding(.bottom, 30)
-                
             }
             .tabItem {
                 Image(systemName: "map.fill")
@@ -121,6 +132,12 @@ struct ContentView: View {
                     Text("목록")
                 }
                 .tag(1)
+        }
+        .sheet(isPresented: $isShowingEditSheet) {
+            RecordEditView(
+                viewModel: viewModel,
+                currentCoordinate: locationManager.location?.coordinate
+            )
         }
     }
 }

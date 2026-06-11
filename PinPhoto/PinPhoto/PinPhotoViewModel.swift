@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import MapKit
+import CoreLocation
 
 class PinPhotoViewModel: ObservableObject {
     
@@ -39,22 +40,49 @@ class PinPhotoViewModel: ObservableObject {
     // 새로운 추억 기록을 배열에 추가
     func addRecord(title: String, latitude: Double, longitude: Double, memo: String, imageData: Data?) {
         
-        // VisitRecord 인스턴스 생성
-        let newRecord = VisitRecord(
-            id: UUID(), //  고유한 식별자 자동 생성
-            latitude: latitude,
-            longitude: longitude,
-            address: nil,
-            title: title,
-            memo: memo,
-            imageData: imageData,
-            date: Date() // 현재 기록하는 시점의 날짜/시간 저장
-        )
+        let location = CLLocation(latitude: latitude, longitude: longitude)
+        let geocoder = CLGeocoder()
         
-        self.records.insert(newRecord, at: 0)
-        
-        saveToUserDefaults()
-        print(" [ViewModel] 새로운 기록 저장 완료 및 로컬 DB 동기화 성공!")
+        geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+            guard let self = self else { return }
+            
+            var parsedAddress = "위치 정보 불명"
+            
+            if let error = error {
+                print(" [ViewModel Geocoder 에러]: \(error.localizedDescription)")
+            } else if let placemark = placemarks?.first {
+                
+                let city = placemark.administrativeArea ?? ""
+                let locality = placemark.locality ?? ""
+                let subLocality = placemark.subLocality ?? ""
+                                
+                let rawAddress = "\(city) \(locality) \(subLocality)"
+                let cleanedAddress = rawAddress.components(separatedBy: .whitespacesAndNewlines)
+                    .filter { !$0.isEmpty }
+                    .joined(separator: " ")
+                                
+                if !cleanedAddress.isEmpty {
+                    parsedAddress = cleanedAddress
+                }
+            }
+            
+            DispatchQueue.main.async {
+                // VisitRecord 인스턴스 생성
+                let newRecord = VisitRecord(
+                    id: UUID(), //  고유한 식별자 자동 생성
+                    latitude: latitude,
+                    longitude: longitude,
+                    address: "📍 \(parsedAddress)",
+                    title: title,
+                    memo: memo,
+                    imageData: imageData,
+                    date: Date() // 현재 기록하는 시점의 날짜/시간 저장
+                )
+                self.records.insert(newRecord, at: 0)
+                self.saveToUserDefaults()
+                print(" [ViewModel] 새로운 기록 저장 완료 및 로컬 DB 동기화 성공!")
+            }
+        }
     }
     
     // 현재 메모리에 있는 records 배열을 JSON으로 직렬화하여 영구 저장
