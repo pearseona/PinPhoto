@@ -75,7 +75,10 @@ struct RecordListView: View {
                 } else {
                     // 최신순으로 정렬된 리스트 렌더링
                     List(filteredRecords, id: \.id) { record in
-                        RecordRowView(record: record)
+                        
+                        NavigationLink(destination: RecordDetailView(record: record)) {
+                            RecordRowView(record: record)
+                        }
                 }
                     .listStyle(PlainListStyle())
                 }

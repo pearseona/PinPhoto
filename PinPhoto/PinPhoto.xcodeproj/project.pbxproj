@@ -19,6 +19,7 @@
 		0765896A2FCC8CD100404F68 /* PinPhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076589692FCC8CD100404F68 /* PinPhotoViewModel.swift */; };
 		078B607F2FD93E80008059DB /* RecordRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078B607E2FD93E80008059DB /* RecordRowView.swift */; };
 		078B60812FD93EA6008059DB /* RecordListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078B60802FD93EA6008059DB /* RecordListView.swift */; };
+		07EFE31B2FDADC4900C3E195 /* RecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07EFE31A2FDADC4900C3E195 /* RecordDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		076589692FCC8CD100404F68 /* PinPhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinPhotoViewModel.swift; sourceTree = "<group>"; };
 		078B607E2FD93E80008059DB /* RecordRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordRowView.swift; sourceTree = "<group>"; };
 		078B60802FD93EA6008059DB /* RecordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordListView.swift; sourceTree = "<group>"; };
+		07EFE31A2FDADC4900C3E195 /* RecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 				076490B02FCDB31E0017D980 /* SearchViewModel.swift */,
 				078B607E2FD93E80008059DB /* RecordRowView.swift */,
 				078B60802FD93EA6008059DB /* RecordListView.swift */,
+				07EFE31A2FDADC4900C3E195 /* RecordDetailView.swift */,
 			);
 			path = PinPhoto;
 			sourceTree = "<group>";
@@ -168,6 +171,7 @@
 				0765896A2FCC8CD100404F68 /* PinPhotoViewModel.swift in Sources */,
 				076490B12FCDB31E0017D980 /* SearchViewModel.swift in Sources */,
 				076190092FC45CA400CBED3C /* ContentView.swift in Sources */,
+				07EFE31B2FDADC4900C3E195 /* RecordDetailView.swift in Sources */,
 				076190072FC45CA400CBED3C /* PinPhotoApp.swift in Sources */,
 				076589652FCC788600404F68 /* ImagePicker.swift in Sources */,
 				078B607F2FD93E80008059DB /* RecordRowView.swift in Sources */,
