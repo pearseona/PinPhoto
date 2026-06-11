@@ -7,47 +7,45 @@ struct RecordRowView: View {
     
     @State private var addressText: String = "주소 변환 중..."
     
+    let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255)
+    let midnightText = Color(red: 30/255, green: 42/255, blue: 58/255)
+    let iconGray = Color(red: 140/255, green: 151/255, blue: 167/255)
+    
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 16) {
             
-            // 이미지 영역 (유저 이미지가 없으면 기본 플레이스홀더)
+            // 이미지 영역
             if let data = record.imageData, let uiImage = UIImage(data: data) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 60, height: 60)
-                    .cornerRadius(8)
+                    .frame(width: 65, height: 65)
+                    .cornerRadius(10)
                     .clipped()
             } else {
-                Image(systemName: "photo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding(10)
-                    .background(Color(.systemGray6))
-                    .foregroundColor(.gray)
-                    .cornerRadius(8)
+                // 이미지가 없을 때
+                ZStack {
+                    Color(red: 235/255, green: 243/255, blue: 255/255)
+                    Image(systemName: "photo")
+                        .foregroundColor(deepOceanBlue)
+                }
+                .frame(width: 65, height: 65)
+                .cornerRadius(10)
             }
             
             // 텍스트 정보 영역
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
                 
                 // 제목
                 Text(record.title.isEmpty ? "제목 없음" : record.title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(midnightText)
                     .lineLimit(1)
                 
-                // 메오
-                Text(record.memo.isEmpty ? "추가된 메모가 없습니다." : record.memo)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                
-                // 좌표 (위경도 주소)
+                // 역지오코딩 주소
                 Text(addressText)
-                    .font(.caption2)
-                    .foregroundColor(.blue)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(iconGray)
                     .lineLimit(1)
             }
             
@@ -55,17 +53,17 @@ struct RecordRowView: View {
             
             // 우측 날짜 표출
             Text(formatDate(record.date))
-                .font(.caption)
-                .foregroundColor(.gray)
+                .font(.system(size: 12))
+                .foregroundColor(iconGray)
         }
-        .padding(.vertical, 4)
-        
+
+        .padding(.vertical, 2)
         .onAppear {
             fetchAddress()
         }
     }
     
-    // 애플 지도 서버에 한글 주소 요청
+    // 애플 지도 서버에 한글 주소 요청 및 역지오코딩 파이프라인
     private func fetchAddress() {
         let location = CLLocation(latitude: record.latitude, longitude: record.longitude)
         let geocoder = CLGeocoder()
@@ -73,7 +71,9 @@ struct RecordRowView: View {
         geocoder.reverseGeocodeLocation(location) { placemarks, error in
             if let error = error {
                 print(" [Geocoder 에러]: \(error.localizedDescription)")
-                self.addressText = "📍 주소 변환 실패"
+                DispatchQueue.main.async {
+                    self.addressText = "📍 주소 변환 실패"
+                }
                 return
             }
             
@@ -90,7 +90,6 @@ struct RecordRowView: View {
                 DispatchQueue.main.async {
                     self.addressText = cleanedAddress.isEmpty ? "📍 주소 불명" : "📍 \(cleanedAddress)"
                 }
-            
             }
         }
     }

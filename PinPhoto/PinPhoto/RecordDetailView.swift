@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 
 struct RecordDetailView: View {
     
@@ -6,94 +7,122 @@ struct RecordDetailView: View {
     
     @ObservedObject var viewModel: PinPhotoViewModel
     
-    let deepOceanBlue = Color(red: 26/255, green: 75/255, blue: 143/255)
+    let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255)
+    let midnightText = Color(red: 30/255, green: 42/255, blue: 58/255)
+    let iconGray = Color(red: 140/255, green: 151/255, blue: 167/255)
+    let lightBlueGray = Color(red: 245/255, green: 247/255, blue: 250/255)
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                
-                // 대형 사진 영역
-                if let data = record.imageData, let uiImage = UIImage(data: data) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(maxWidth: .infinity, minHeight: 300, maxHeight: 400)
+    
+        ZStack {
+            lightBlueGray
+                .edgesIgnoringSafeArea(.all)
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 22) {
+                    
+                    // 대형 사진 영역
+                    if let data = record.imageData, let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(maxWidth: .infinity, minHeight: 280, maxHeight: 350)
+                            .cornerRadius(16)
+                            .shadow(color: Color.black.opacity(0.06), radius: 8, x: 0, y: 4)
+                            .clipped()
+                    } else {
+                        
+                        // 사진이 없는 경우
+                        VStack(spacing: 12) {
+                            Image(systemName: "photo.on.rectangle.angled")
+                                .font(.system(size: 50))
+                                .foregroundColor(iconGray)
+                            Text("등록된 사진이 없습니다.")
+                                .font(.subheadline)
+                                .foregroundColor(iconGray)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 220)
+                        .background(Color.white)
                         .cornerRadius(16)
-                        .shadow(radius: 5)
-                        .clipped()
-                } else {
-                    
-                    // 사진이 없는 경우
-                    VStack(spacing: 12) {
-                        Image(systemName: "photo.on.rectangle.angled")
-                            .font(.system(size: 60))
-                            .foregroundColor(.gray)
-                        Text("등록된 사진이 없습니다.")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                        .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 3)
                     }
-                    .frame(maxWidth: .infinity, minHeight: 250)
-                    .background(Color(.systemGray6))
+                    
+                    VStack(alignment: .leading, spacing: 18) {
+                        
+                        // 주소
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("위치")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundColor(deepOceanBlue)
+                            
+                            Text(record.address ?? "위치 정보 없음")
+                                .font(.system(size: 15, weight: .medium))
+                                .foregroundColor(iconGray)
+                        }
+                        
+                        Divider()
+                            .background(lightBlueGray)
+                        
+                        // 제목 영역
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("제목")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundColor(iconGray)
+                            
+                            Text(record.title.isEmpty ? "제목 없음" : record.title)
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(midnightText)
+                        }
+                        
+                        Divider()
+                            .background(lightBlueGray)
+                        
+                        // 메모 영역
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("기록된 메모")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundColor(iconGray)
+                            
+                            Text(record.memo.isEmpty ? "추가된 메모가 없습니다." : record.memo)
+                                .font(.system(size: 15))
+                                .foregroundColor(midnightText)
+                                .lineSpacing(5)
+                        }
+                    }
+                    .padding(20)
+                    .background(Color.white)
                     .cornerRadius(16)
-                }
-                
-                // 텍스트 정보 영역
-                VStack(alignment: .leading, spacing: 16) {
+                    .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
                     
-                    // 제목 파트
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("제목")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .bold()
-                        Text(record.title.isEmpty ? "제목 없음" : record.title)
-                            .font(.title2)
-                            .bold()
-                            .foregroundColor(.primary)
+                    // 지도 바로가기 버튼 액션 파이프라인 연동
+                    Button(action: {
+                        withAnimation(.spring(response: 0.55, dampingFraction: 0.78)) {
+                            viewModel.region.center = CLLocationCoordinate2D(latitude: record.latitude, longitude: record.longitude)
+                            viewModel.region.span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
+                        }
+              
+                        viewModel.selectedTab = 0
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "mappin.and.ellipse")
+                                .font(.system(size: 16, weight: .bold))
+                            Text("지도에서 위치 확인하기")
+                                .font(.system(size: 16, weight: .bold))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 54)
+                        .background(deepOceanBlue)
+                        .foregroundColor(.white)
+                        .cornerRadius(27)
+                        .shadow(color: deepOceanBlue.opacity(0.25), radius: 6, x: 0, y: 4)
                     }
+                    .padding(.top, 6)
                     
-                    Divider()
-                    
-                    // 메모 파트
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("기록된 메모")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .bold()
-                        Text(record.memo.isEmpty ? "추가된 메모가 없습니다." : record.memo)
-                            .font(.body)
-                            .foregroundColor(.primary)
-                            .lineSpacing(4)
-                    }
+                    Spacer()
                 }
                 .padding()
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(14)
-                
-                // 지도 바로가기 버튼 액션 파이프라인
-                Button(action: {
-                    withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                        viewModel.moveMapTo(record: record)
-                    }
-                }) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "mappin.and.ellipse")
-                        Text("지도에서 위치 확인하기")
-                            .bold()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(deepOceanBlue)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-                    .shadow(color: deepOceanBlue.opacity(0.3), radius: 4, x: 0, y: 3)
-                }
-                .padding(.top, 8)
-                
-                Spacer()
             }
-            .padding()
         }
-        .navigationBarTitle(record.title.isEmpty ? "상세 보기" : record.title, displayMode: .inline)
+        .navigationBarTitle("추억 상세보기", displayMode: .inline)
     }
 }

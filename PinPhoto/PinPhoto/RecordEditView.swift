@@ -3,9 +3,8 @@ import CoreLocation
 
 struct RecordEditView: View {
     
-    // 색상 : 딥 오션 블루
-    let deepOceanBlue = Color(red: 26/255, green: 75/255, blue: 143/255)
-    let lightBlueGray = Color(red: 240/255, green: 244/255, blue: 248/255)
+    let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255)
+    let lightBlueGray = Color(red: 245/255, green: 247/255, blue: 250/255)
     
     @ObservedObject var viewModel: PinPhotoViewModel
     
@@ -32,7 +31,6 @@ struct RecordEditView: View {
                 
                 // 사진 영역
                 
-                // 선택된 사진 데이터가 있으면 미리보기를 보여주고, 없으면 버튼을 노출
                 if let selectedImageData = selectedImageData, let uiImage = UIImage(data: selectedImageData) {
                     
                     // 로드된 데이터를 이미지 뷰로 화면에 표출
@@ -43,14 +41,14 @@ struct RecordEditView: View {
                         .cornerRadius(12)
                         .clipped()
                     
-                    // 다시 고르고 싶을 때를 위한 초기화 버튼
+                    // 사진 다시 고르고 싶을 때
                     Button("사진 다시 고르기") {
                         self.selectedImageData = nil
                     }
                     .foregroundColor(.red)
                 } else {
                     
-                    // 버튼을 누르면 사진첩을 열도록 스위치(isImagePickerPresented)를 true로 변경
+             
                     Button(action: {
                         isImagePickerPresented = true
                     }){
@@ -71,7 +69,7 @@ struct RecordEditView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("제목")
                         .font(.headline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color(red: 30/255, green: 42/255, blue: 58/255))
                     
                     TextField("추억의 제목을 입력하세요", text: $titleText)
                         .padding()
@@ -83,10 +81,11 @@ struct RecordEditView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("메모")
                         .font(.headline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color(red: 30/255, green: 42/255, blue: 58/255))
                     
-                    TextField("이 장소의 추억을 기록하세요", text: $memoText)
-                        .padding()
+                    TextEditor(text: $memoText)
+                        .frame(minHeight: 120, maxHeight: 180)
+                        .padding(8)
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                 }
@@ -106,8 +105,8 @@ struct RecordEditView: View {
                 
                 trailing: Button("저장") {
                     
-                    let targetLatitude = currentCoordinate?.latitude ?? 37.5824
-                    let targetLongitude = currentCoordinate?.longitude ?? 127.0103
+                    let targetLatitude = viewModel.region.center.latitude
+                    let targetLongitude = viewModel.region.center.longitude
                     
                     viewModel.addRecord(
                         title: titleText.isEmpty ? "제목 없음" : titleText,
@@ -123,9 +122,12 @@ struct RecordEditView: View {
                 .foregroundColor(deepOceanBlue)
                 .font(.system(size: 17, weight: .bold))
                 
-                // 사진을 고르고 메모에 최소 한 글자 이상 써야 저장 버튼 활성화
                 .disabled(titleText.isEmpty || memoText.isEmpty || selectedImageData == nil)
             )
+        }
+        
+        .onAppear {
+            UITextView.appearance().backgroundColor = .clear
         }
             
             // 사진첩 시트 모달 연결

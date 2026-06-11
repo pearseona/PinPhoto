@@ -9,9 +9,13 @@ struct ContentView: View {
 
     @State private var isShowingEditSheet = false
     @State private var isInitialRegionSet = false
-    @State private var trackingMode: MapUserTrackingMode = .follow
     
-    let deepOceanBlue = Color(red: 26/255, green: 75/255, blue: 143/255)
+    @State private var trackingMode: MapUserTrackingMode = .none
+    
+    let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255) 
+    let midnightText = Color(red: 30/255, green: 42/255, blue: 58/255)
+    let iconGray = Color(red: 140/255, green: 151/255, blue: 167/255)
+    let lightBlueGray = Color(red: 245/255, green: 247/255, blue: 250/255)
     
     var body: some View {
         
@@ -43,7 +47,7 @@ struct ContentView: View {
                 }
                 .edgesIgnoringSafeArea(.all)
                 
-                // 검색창
+                // 상단 팝업 검색창
                 VStack {
                     HStack {
                         Image(systemName: "magnifyingglass")
@@ -52,6 +56,7 @@ struct ContentView: View {
                         TextField("추억을 기록할 장소를 검색하세요...", text: $searchViewModel.searchQuery, onCommit: {
                             trackingMode = .none
                             searchViewModel.performSearch(currentRegion: viewModel.region) { targetCoordinate in
+                                
                                 if let coordinate = targetCoordinate {
                                     DispatchQueue.main.async {
                                         withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
@@ -75,7 +80,7 @@ struct ContentView: View {
                         }
                     }
                     .padding()
-                    .background(Color(.systemBackground).opacity(0.9))
+                    .background(Color(.systemBackground).opacity(0.95))
                     .cornerRadius(12)
                     .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
                     .padding(.horizontal)
@@ -88,16 +93,18 @@ struct ContentView: View {
                 Button(action: {
                     isShowingEditSheet = true
                 }) {
-                    HStack {
+                    HStack(spacing: 8) {
                         Image(systemName: "plus.circle.fill")
-                        Text("현재 위치에 기록하기")
+                            .font(.system(size: 18, weight: .bold))
+                        Text("현재 지도 위치에 기록하기")
+                            .font(.system(size: 16, weight: .bold))
                     }
-                    .font(.headline)
                     .foregroundColor(.white)
-                    .padding()
+                    .padding(.horizontal, 28)
+                    .padding(.vertical, 16)
                     .background(deepOceanBlue)
-                    .cornerRadius(15)
-                    .shadow(radius: 5)
+                    .cornerRadius(28)
+                    .shadow(color: deepOceanBlue.opacity(0.3), radius: 8, x: 0, y: 4)
                 }
                 .padding(.bottom, 30)
                 
@@ -114,12 +121,6 @@ struct ContentView: View {
                     Text("목록")
                 }
                 .tag(1)
-        }
-        .sheet(isPresented: $isShowingEditSheet) {
-            RecordEditView(
-                viewModel: viewModel,
-                currentCoordinate: locationManager.location?.coordinate
-            )
         }
     }
 }

@@ -44,6 +44,7 @@ class PinPhotoViewModel: ObservableObject {
             id: UUID(), //  고유한 식별자 자동 생성
             latitude: latitude,
             longitude: longitude,
+            address: nil,
             title: title,
             memo: memo,
             imageData: imageData,
