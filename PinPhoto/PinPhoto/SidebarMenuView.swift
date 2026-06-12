@@ -96,7 +96,10 @@ struct SidebarMenuView: View {
             }
         }
 
-        .sheet(isPresented: $isShowingProfileEdit) { Text("👤 프로필 변경 뷰 들어올 자리") }
+        .sheet(isPresented: $isShowingProfileEdit) {
+            ProfileEditView(sidebarVM: sidebarVM)
+        }
+        
         .sheet(isPresented: $isShowingDashboard) { Text("📊 대시보드 뷰 들어올 자리") }
         .sheet(isPresented: $isShowingTimeline) { Text("🗺️ Polyline 동선 지도 들어올 자리") }
         .sheet(isPresented: $isShowingCategoryFilter) { Text("⚙️ 카테고리 필터 설정 들어올 자리") }

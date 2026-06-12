@@ -1,10 +1,11 @@
 import Foundation
 import Combine
+import SwiftUI
 
 class SidebarViewModel: ObservableObject {
     
     // 유저 프로필 상태 변수
-    @Published var nickname: String = UserDefaults.standard.string(forKey: "User_Nickname") ?? "배선아" {
+    @Published var nickname: String = UserDefaults.standard.string(forKey: "User_Nickname") ?? "user" {
         didSet { UserDefaults.standard.set(nickname, forKey: "User_Nickname") }
     }
     
@@ -15,6 +16,6 @@ class SidebarViewModel: ObservableObject {
     @Published var isSidebarOpen: Bool = false
     
     init() {
-        print(" [SidebarViewModel] 독립적인 사용자 설정 및 사이드바 인프라 로드 완료")
+        print(" [SidebarViewModel] 프로필 로드 완료")
     }
 }
