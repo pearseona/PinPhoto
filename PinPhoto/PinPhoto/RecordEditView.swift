@@ -15,6 +15,8 @@ struct RecordEditView: View {
     @State private var memoText: String = ""
     @State private var titleText: String = ""
     
+    @State private var selectedCategory: MemoryCategory = .daily
+    
     let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255)
     let midnightText = Color(red: 30/255, green: 42/255, blue: 58/255)
     let iconGray = Color(red: 140/255, green: 151/255, blue: 167/255)
@@ -62,13 +64,40 @@ struct RecordEditView: View {
                                 }
                             }
                             
+                            // 카테고리 선택
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("카테고리")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(midnightText)
+                                
+                                HStack(spacing: 10) {
+                                    ForEach(MemoryCategory.allCases, id: \.self) { category in
+                                        Button(action: {
+                                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                                self.selectedCategory = category
+                                            }
+                                        }) {
+                                            
+                                            Text(category.rawValue)
+                                                .font(.system(size: 14, weight: .bold))
+                                                .padding(.horizontal, 16)
+                                                .padding(.vertical, 10)
+                                                .background(selectedCategory == category ? deepOceanBlue : Color.white)
+                                                .foregroundColor(selectedCategory == category ? .white : midnightText)
+                                                .cornerRadius(20)
+                                                .shadow(color: selectedCategory == category ? deepOceanBlue.opacity(0.2) : Color.black.opacity(0.02), radius: 4, x: 0, y: 2)
+                                        }
+                                    }
+                                }
+                            }
+                            
                             // 제목 입력 영역
                             VStack(alignment: .leading, spacing: 6) {
                                 Text("제목")
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(midnightText)
                                 
-                                TextField("추억의 제목을 입력하세요", text: $titleText)
+                                TextField("", text: $titleText)
                                     .padding()
                                     .background(Color.white)
                                     .cornerRadius(10)
@@ -104,8 +133,8 @@ struct RecordEditView: View {
                     trailing: Button("저장") {
                         
                         // 지도 중심 좌표 추출 및 저장
-                        let targetLatitude = viewModel.region.center.latitude
-                        let targetLongitude = viewModel.region.center.longitude
+                        let targetLatitude = currentCoordinate?.latitude ?? viewModel.region.center.latitude
+                        let targetLongitude = currentCoordinate?.longitude ?? viewModel.region.center.longitude
                         
                         viewModel.addRecord(
                             title: titleText.isEmpty ? "제목 없음" : titleText,
@@ -113,7 +142,7 @@ struct RecordEditView: View {
                             longitude: targetLongitude,
                             memo: memoText,
                             imageData: selectedImageData,
-                            category: .daily
+                            category: selectedCategory
                         )
                         presentationMode.wrappedValue.dismiss()
                     }

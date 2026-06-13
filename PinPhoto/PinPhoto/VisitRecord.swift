@@ -2,15 +2,15 @@ import Foundation
 
 // 추억의 종류를 구분할 카데고리 열거형
 enum MemoryCategory: String, Codable, CaseIterable {
-    case food = "음식점"
-    case cafe = "카페"
-    case travel = "여행지"
+    case food = "맛집"
+    case culture = "문화"
+    case travel = "여행"
     case daily = "일상"
     
     var iconName: String {
         switch self {
         case .food: return "fork.knife"
-        case .cafe: return "cup.and.saucer.fill"
+        case .culture: return "ticker.fill"
         case .travel: return "globe.asia.australia.fill"
         case .daily: return "heart.text.square.fill"
         }

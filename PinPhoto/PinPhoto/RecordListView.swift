@@ -38,16 +38,14 @@ struct RecordListView: View {
                       
                         ForEach(MemoryCategory.allCases, id: \.self) { category in
                             Button(action: { selectedFilterCategory = category }) {
-                                HStack(spacing: 6) {
-                                    Image(systemName: category.iconName)
-                                    Text(category.rawValue)
-                                }
-                                .font(.system(size: 14, weight: .bold))
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
-                                .background(selectedFilterCategory == category ? deepOceanBlue : lightBlueGray)
-                                .foregroundColor(selectedFilterCategory == category ? .white : midnightText)
-                                .cornerRadius(20)
+                              
+                                Text(category.rawValue)
+                                    .font(.system(size: 14, weight: .bold))
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 8)
+                                    .background(selectedFilterCategory == category ? deepOceanBlue : lightBlueGray)
+                                    .foregroundColor(selectedFilterCategory == category ? .white : midnightText)
+                                    .cornerRadius(20)
                             }
                         }
                     }
