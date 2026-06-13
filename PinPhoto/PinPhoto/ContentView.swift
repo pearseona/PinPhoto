@@ -6,12 +6,12 @@ struct ContentView: View {
     @StateObject private var locationManager = LocationManager()
     @ObservedObject var viewModel: PinPhotoViewModel
     @StateObject private var searchViewModel = SearchViewModel()
-    
     @StateObject private var sidebarVM = SidebarViewModel()
 
     @State private var isShowingEditSheet = false
-    
     @State private var searchedCoordinate: CLLocationCoordinate2D? = nil
+    
+    @State private var centerCoordinate = CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780)
 
     let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255)
     let midnightText = Color(red: 30/255, green: 42/255, blue: 58/255)
@@ -25,10 +25,12 @@ struct ContentView: View {
             ZStack {
                 
                 // 바닥 지도 레이어
-                CustomMapView(viewModel: viewModel, searchedCoordinate: $searchedCoordinate)
+                CustomMapView(viewModel: viewModel,
+                              searchedCoordinate: $searchedCoordinate,
+                              centerCoordinate: $centerCoordinate
+                    )
                     .edgesIgnoringSafeArea(.all)
                 
-                // 지도 중심 조준 핀
                 Image(systemName: "mappin.and.ellipse")
                     .font(.system(size: 32, weight: .semibold))
                     .foregroundColor(deepOceanBlue)
@@ -36,7 +38,7 @@ struct ContentView: View {
                     .offset(y: -14)
                 
                 // 상단 검색창 및 사이드바 토글 바
-                VStack {
+                VStack(spacing: 0) {
                     HStack(spacing: 12) {
                         
                         // 왼쪽 사이드바 오픈 버튼
@@ -89,6 +91,29 @@ struct ContentView: View {
                     .padding(.horizontal)
                     .padding(.top, 10)
                     
+                    
+                    // 현재 위치로 이동 버튼
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            
+                            if let userLocation = locationManager.location?.coordinate {
+                                withAnimation(.spring(response: 0.45, dampingFraction: 0.7)) {
+                                    self.searchedCoordinate = userLocation
+                                }
+                            }
+                        }) {
+                            Image(systemName: "location.fill")
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(width: 38, height: 38)
+                                .background(deepOceanBlue)
+                                .cornerRadius(10)
+                                .shadow(color: deepOceanBlue.opacity(0.25), radius: 4, x: 0, y: 2)
+                        }
+                        .padding(.trailing, 16)
+                        .padding(.top, 8)
+                    }
                     Spacer()
                 }
                 
@@ -138,7 +163,7 @@ struct ContentView: View {
         .sheet(isPresented: $isShowingEditSheet) {
             RecordEditView(
                 viewModel: viewModel,
-                currentCoordinate: locationManager.location?.coordinate
+                currentCoordinate: centerCoordinate
             )
         }
     }
