@@ -1,37 +1,91 @@
 import Foundation
 import Combine
+import MapKit
+import CoreLocation
 
 class PinPhotoViewModel: ObservableObject {
     
-    // 지도와 리스트 뷰가 바라볼 데이터 배열 (전역 상태)
     @Published var records: [VisitRecord] = []
+    @Published var selectedTab: Int = 0
+    
+    @Published var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 37.5824, longitude: 127.0103),
+        span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+    )
     
     private let userDefaultsKey = "PinPhoto_VisitRecords"
     
     init() {
+        
+        self.selectedTab = 0
+        
         loadFromUserDefaults()
+        
+        DispatchQueue.main.async {
+            self.selectedTab = 0
+        }
     }
     
-    // 새로운 추억 기록을 배열에 추가하는 로직 함수
-    func addRecord(latitude: Double, longitude: Double, memo: String, imageData: Data?) {
+    // 특정 기록 위치로 지도 이동 및 탭 전환
+    func moveMapTo(record: VisitRecord) {
         
-        // VisitRecord 인스턴스 생성
-        let newRecord = VisitRecord(
-            id: UUID(), //  고유한 식별자 자동 생성
-            latitude: latitude,
-            longitude: longitude,
-            memo: memo,
-            imageData: imageData,
-            date: Date() // 현재 기록하는 시점의 날짜/시간 저장
+        self.region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: record.latitude, longitude: record.longitude),
+            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
         )
-        
-        self.records.insert(newRecord, at: 0)
-        
-        saveToUserDefaults()
-        print(" [ViewModel] 새로운 기록 저장 완료 및 로컬 DB 동기화 성공!")
+        self.selectedTab = 0
+        print(" [ViewModel] '\(record.title)' 위치로 지도 시점 이동 및 탭 전환 완료!")
     }
     
-    // [Save] 현재 메모리에 있는 records 배열을 JSON으로 직렬화하여 영구 저장
+    // 새로운 추억 기록을 배열에 추가
+    func addRecord(title: String, latitude: Double, longitude: Double, memo: String, imageData: Data?) {
+        
+        let location = CLLocation(latitude: latitude, longitude: longitude)
+        let geocoder = CLGeocoder()
+        
+        geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+            guard let self = self else { return }
+            
+            var parsedAddress = "위치 정보 불명"
+            
+            if let error = error {
+                print(" [ViewModel Geocoder 에러]: \(error.localizedDescription)")
+            } else if let placemark = placemarks?.first {
+                
+                let city = placemark.administrativeArea ?? ""
+                let locality = placemark.locality ?? ""
+                let subLocality = placemark.subLocality ?? ""
+                                
+                let rawAddress = "\(city) \(locality) \(subLocality)"
+                let cleanedAddress = rawAddress.components(separatedBy: .whitespacesAndNewlines)
+                    .filter { !$0.isEmpty }
+                    .joined(separator: " ")
+                                
+                if !cleanedAddress.isEmpty {
+                    parsedAddress = cleanedAddress
+                }
+            }
+            
+            DispatchQueue.main.async {
+                // VisitRecord 인스턴스 생성
+                let newRecord = VisitRecord(
+                    id: UUID(), //  고유한 식별자 자동 생성
+                    latitude: latitude,
+                    longitude: longitude,
+                    address: "📍 \(parsedAddress)",
+                    title: title,
+                    memo: memo,
+                    imageData: imageData,
+                    date: Date() // 현재 기록하는 시점의 날짜/시간 저장
+                )
+                self.records.insert(newRecord, at: 0)
+                self.saveToUserDefaults()
+                print(" [ViewModel] 새로운 기록 저장 완료 및 로컬 DB 동기화 성공!")
+            }
+        }
+    }
+    
+    // 현재 메모리에 있는 records 배열을 JSON으로 직렬화하여 영구 저장
     private func saveToUserDefaults() {
         do {
             let encoder = JSONEncoder()
@@ -43,7 +97,7 @@ class PinPhotoViewModel: ObservableObject {
         }
     }
     
-    // [Read]  앱 실행 시 로컬에 저장된 JSON을 읽어와서 역직렬화(복원)
+    // 앱 실행 시 로컬에 저장된 JSON을 읽어와서 역직렬화
     private func loadFromUserDefaults() {
         
         guard let savedData = UserDefaults.standard.data(forKey: userDefaultsKey) else {
