@@ -42,12 +42,14 @@ struct CustomMapView: UIViewRepresentable {
         // 검색 기능 디버깅 파이프라인
         if let searchTarget = searchedCoordinate {
             
-            // 장소 검색 성공 시 해당 좌표로 이동
             let customSpan = MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008)
             let region = MKCoordinateRegion(center: searchTarget, span: customSpan)
+            
+            // 지도의 렌더링 시점을 검색 타겟으로 이동
             uiView.setRegion(region, animated: true)
             
             DispatchQueue.main.async {
+                self.centerCoordinate = searchTarget
                 self.searchedCoordinate = nil
             }
         }

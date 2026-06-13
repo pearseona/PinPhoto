@@ -67,11 +67,14 @@ struct ContentView: View {
                                     .foregroundColor(iconGray)
                                 
                                 TextField("추억을 기록할 장소를 검색하세요...", text: $searchViewModel.searchQuery, onCommit: {
+                                   
                                     searchViewModel.performSearch(currentRegion: viewModel.region) { targetCoordinate in
                                         if let coordinate = targetCoordinate {
                                             DispatchQueue.main.async {
                                                 withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
+                                                    
                                                     self.searchedCoordinate = coordinate
+                                                    self.centerCoordinate = coordinate
                                                 }
                                             }
                                         }
@@ -101,7 +104,9 @@ struct ContentView: View {
                             Button(action: {
                                 if let userLocation = locationManager.location?.coordinate {
                                     withAnimation(.spring(response: 0.45, dampingFraction: 0.7)) {
+                                        
                                         self.searchedCoordinate = userLocation
+                                        self.centerCoordinate = userLocation
                                     }
                                 }
                             }) {
