@@ -5,6 +5,8 @@ struct CustomMapView: UIViewRepresentable {
     
     @ObservedObject var viewModel: PinPhotoViewModel
     
+    @Binding var searchedCoordinate: CLLocationCoordinate2D?
+    
     // 저장된 추억들을 날짜 오름차순으로 정렬하여 동선 좌표 배열 추출
     var sortedCoordinates: [CLLocationCoordinate2D] {
         return viewModel.records
@@ -45,12 +47,19 @@ struct CustomMapView: UIViewRepresentable {
             uiView.addOverlay(polyline)
         }
         
-        // 지도 중심점을 최신 등록된 추억 또는 현재 바인딩된 리전으로 동기화
-        if let firstCoord = coords.last {
-            let region = MKCoordinateRegion(
-                center: firstCoord,
-                span: uiView.region.span
-            )
+        // 검색 기능 디버깅 파이프라인
+        if let searchTarget = searchedCoordinate {
+            let customSpan = MKCoordinateSpan(latitudeDelta: 0.012, longitudeDelta: 0.012)
+            let region = MKCoordinateRegion(center: searchTarget, span: customSpan)
+            uiView.setRegion(region, animated: true)
+            
+            DispatchQueue.main.async {
+                self.searchedCoordinate = nil
+            }
+        } else if let firstCoord = coords.last {
+            
+            let customSpan = MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
+            let region = MKCoordinateRegion(center: firstCoord, span: customSpan)
             uiView.setRegion(region, animated: true)
         }
     }

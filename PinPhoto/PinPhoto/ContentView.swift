@@ -10,6 +10,8 @@ struct ContentView: View {
     @StateObject private var sidebarVM = SidebarViewModel()
 
     @State private var isShowingEditSheet = false
+    
+    @State private var searchedCoordinate: CLLocationCoordinate2D? = nil
 
     let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255)
     let midnightText = Color(red: 30/255, green: 42/255, blue: 58/255)
@@ -23,7 +25,7 @@ struct ContentView: View {
             ZStack {
                 
                 // 바닥 지도 레이어
-                CustomMapView(viewModel: viewModel)
+                CustomMapView(viewModel: viewModel, searchedCoordinate: $searchedCoordinate)
                     .edgesIgnoringSafeArea(.all)
                 
                 // 지도 중심 조준 핀
@@ -63,11 +65,7 @@ struct ContentView: View {
                                     if let coordinate = targetCoordinate {
                                         DispatchQueue.main.async {
                                             withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
-                                                viewModel.region.center = coordinate
-                                                viewModel.region.span = MKCoordinateSpan(
-                                                    latitudeDelta: 0.008,
-                                                    longitudeDelta: 0.008
-                                                )
+                                                self.searchedCoordinate = coordinate
                                             }
                                         }
                                     }
