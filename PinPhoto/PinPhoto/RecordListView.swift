@@ -35,7 +35,8 @@ struct RecordListView: View {
                                 .cornerRadius(20)
                         }
                         
-                        ForEach(MemoryCategory.allCases.filter { [.restaurant, .cafe, .travel].contains($0) }, id: \.self) { category in
+                      
+                        ForEach(MemoryCategory.allCases, id: \.self) { category in
                             Button(action: { selectedFilterCategory = category }) {
                                 HStack(spacing: 6) {
                                     Image(systemName: category.iconName)
@@ -68,8 +69,10 @@ struct RecordListView: View {
                     List {
                         ForEach(filteredRecords) { record in
                             
-                            // 셀을 누르면 기존 기록을 들고 수정 화면으로 이동
-                            NavigationLink(destination: RecordEditView(viewModel: viewModel, editingRecord: record)) {
+                            NavigationLink(destination: RecordEditView(
+                                viewModel: viewModel,
+                                currentCoordinate: .init(latitude: record.latitude, longitude: record.longitude)
+                            )) {
                                 HStack(spacing: 16) {
                                     if let data = record.imageData, let uiImage = UIImage(data: data) {
                                         Image(uiImage: uiImage)
@@ -130,8 +133,8 @@ struct RecordListView: View {
         for index in offsets {
             let recordToDelete = filteredRecords[index]
             if let originalIndex = viewModel.records.firstIndex(where: { $0.id == recordToDelete.id }) {
-                viewModel.records.remove(at: originalIndex)
-                
+               
+                viewModel.deleteRecord(at: originalIndex)
                 print(" [CRUD] 레코드 삭제 성공: \(recordToDelete.title)")
             }
         }
