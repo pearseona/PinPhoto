@@ -1,156 +1,123 @@
 import SwiftUI
 
 struct RecordListView: View {
-    
     @ObservedObject var viewModel: PinPhotoViewModel
     
-    @State private var searchText = ""
+    @State private var selectedFilterCategory: MemoryCategory? = nil
     
     let deepOceanBlue = Color(red: 23/255, green: 111/255, blue: 247/255)
     let midnightText = Color(red: 30/255, green: 42/255, blue: 58/255)
-    let iconGray = Color(red: 140/255, green: 151/255, blue: 167/255)
-    let lightBlueGray = Color(red: 245/255, green: 247/255, blue: 250/255)
     
-    // 검색 필터링 파이프라인
-    private var filteredRecords: [VisitRecord] {
-        
-        // 최신순 정렬
-        let sorted = viewModel.records.sorted { $0.date > $1.date }
-        
-        // 검색어 비어 있을 때
-        if searchText.isEmpty {
-            return sorted
-        } else {
-            // 검색어 존재할 때
-            return sorted.filter { record in
-                record.title.localizedCaseInsensitiveContains(searchText) ||
-                record.memo.localizedCaseInsensitiveContains(searchText)
-            }
+    // 데이터 스트림 필터링 연산
+    var filteredRecords: [VisitRecord] {
+        if let category = selectedFilterCategory {
+            return viewModel.records.filter { $0.category == category }
         }
+        return viewModel.records
     }
     
-    
     var body: some View {
-      
         NavigationView {
-            
-            ZStack {
-                lightBlueGray
-                    .edgesIgnoringSafeArea(.all)
+            VStack(spacing: 0) {
                 
-                VStack(spacing: 0) {
-                    
-                    // 검색창 UI
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(iconGray)
-                        
-                        TextField("제목, 메모 키워드로 추억을 검색하세요...", text: $searchText)
-                            .foregroundColor(midnightText)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                        
-                        if !searchText.isEmpty {
-                            Button(action: { searchText = "" }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(iconGray)
-                            }
+                // 상단 스크롤 카테고리 필터 바 영역
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        // '전체' 버튼
+                        Button(action: { selectedFilterCategory = nil }) {
+                            Text("전체")
+                                .font(.system(size: 14, weight: .bold))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(selectedFilterCategory == nil ? deepOceanBlue : Color(.secondarySystemBackground))
+                                .foregroundColor(selectedFilterCategory == nil ? .white : midnightText)
+                                .cornerRadius(20)
                         }
-                    }
-                    .padding(12)
-                    .background(Color.white)
-                    .cornerRadius(12)
-                    .shadow(color: Color.black.opacity(0.03), radius: 4, x: 0, y: 2)
-                    .padding(.horizontal)
-                    .padding(.top, 12)
-                    .padding(.bottom, 16)
-                    
-                    // 리스트 렌더링 영역
-                    if filteredRecords.isEmpty {
-                        Spacer()
-                        VStack(spacing: 12) {
-                            Image(systemName: searchText.isEmpty ? "mappin.slash.circle" : "doc.text.magnifyingglass")
-                                .font(.system(size: 50))
-                                .foregroundColor(iconGray)
-                            
-                           
-                            Text(searchText.isEmpty ? "아직 기록된 추억이 없습니다." : "'\(searchText)'가 포함된 추억이 없습니다.")
-                                .foregroundColor(midnightText)
-                                .font(.headline)
-                            
-                            Text(searchText.isEmpty ? "지도에서 현재 위치에 추억을 남겨보세요!" : "다른 키워드로 다시 검색해 보세요.")
-                                .font(.caption)
-                                .foregroundColor(iconGray)
-                        }
-                        Spacer()
-                    } else {
                         
-                        ScrollView {
-                            LazyVStack(spacing: 14) {
-                                ForEach(filteredRecords, id: \.id) { record in
-                                    NavigationLink(destination: RecordDetailView(record: record, viewModel: viewModel)) {
-                                        
-                                        HStack(spacing: 16) {
-                                            
-                                            // 저장된 이미지 썸네일
-                                            if let data = record.imageData, let uiImage = UIImage(data: data) {
-                                                Image(uiImage: uiImage)
-                                                    .resizable()
-                                                    .scaledToFill()
-                                                    .frame(width: 65, height: 65)
-                                                    .cornerRadius(10)
-                                                    .clipped()
-                                            } else {
-                                                ZStack {
-                                                    Color(red: 235/255, green: 243/255, blue: 255/255)
-                                                    Image(systemName: "photo")
-                                                        .foregroundColor(deepOceanBlue)
-                                                }
-                                                .frame(width: 65, height: 65)
-                                                .cornerRadius(10)
-                                            }
-                                            
-                                            // 텍스트 영역 정보
-                                            VStack(alignment: .leading, spacing: 5) {
-                                                Text(record.title.isEmpty ? "제목 없음" : record.title)
-                                                    .font(.system(size: 16, weight: .bold))
-                                                    .foregroundColor(midnightText)
-                                                    .lineLimit(1)
-                                                
-                                                // 역지오코딩된 주소 텍스트 매핑
-                                                Text(record.address ?? "위치 정보 없음")
-                                                    .font(.system(size: 13))
-                                                    .foregroundColor(iconGray)
-                                                    .lineLimit(1)
-                                            }
-                                            
-                                            Spacer()
-                                            
-                                            Image(systemName: "chevron.right")
-                                                .font(.system(size: 14, weight: .semibold))
-                                                .foregroundColor(deepOceanBlue)
-                                        }
-                                        .padding()
-                                        .background(Color.white)
-                                        .cornerRadius(14)
-                                        .shadow(color: Color.black.opacity(0.04), radius: 6, x: 0, y: 3)
+                        ForEach(MemoryCategory.allCases, id: \.self) { category in
+                            Button(action: { selectedFilterCategory = category }) {
+                                HStack(spacing: 6) {
+                                    Image(systemName: category.iconName)
+                                    Text(category.rawValue)
                                 }
-                                .buttonStyle(PlainButtonStyle())
+                                .font(.system(size: 14, weight: .bold))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(selectedFilterCategory == category ? deepOceanBlue : Color(.secondarySystemBackground))
+                                .foregroundColor(selectedFilterCategory == category ? .white : midnightText)
+                                .cornerRadius(20)
                             }
                         }
-                        .padding(.horizontal)
-                        .padding(.bottom, 20)
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 12)
+                }
+                .background(Color(.systemBackground))
                 
+                Divider()
+                
+                // 실시간 필터링된 추억 목록 출력 영역
+                if filteredRecords.isEmpty {
+                    Spacer()
+                    Text("해당 카테고리에 등록된 추억이 없습니다.")
+                        .font(.system(size: 15))
+                        .foregroundColor(.gray)
+                    Spacer()
+                } else {
+                    List {
+                        ForEach(filteredRecords) { record in
+                            HStack(spacing: 16) {
+                                if let data = record.imageData, let uiImage = UIImage(data: data) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 60, height: 60)
+                                        .cornerRadius(8)
+                                        .clipped()
+                                } else {
+                                    Rectangle()
+                                        .fill(Color(.secondarySystemBackground))
+                                        .frame(width: 60, height: 60)
+                                        .cornerRadius(8)
+                                        .overlay(Image(systemName: "photo").foregroundColor(.gray))
+                                }
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Text(record.title)
+                                            .font(.system(size: 16, weight: .bold))
+                                            .foregroundColor(midnightText)
+                                        Spacer()
+                                        
+                                        // 카테고리 태그 배지
+                                        Text(record.category.rawValue)
+                                            .font(.system(size: 11, weight: .semibold))
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 3)
+                                            .background(deepOceanBlue.opacity(0.1))
+                                            .foregroundColor(deepOceanBlue)
+                                            .cornerRadius(6)
+                                    }
+                                    
+                                    Text(record.memo)
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.secondary)
+                                        .lineLimit(1)
+                                    
+                                    if let address = record.address {
+                                        Text(address)
+                                            .font(.system(size: 12))
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 4)
                         }
                     }
+                    .listStyle(PlainListStyle())
                 }
             }
-            .navigationTitle("내 추억 목록")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitle("내 추억 목록", displayMode: .inline)
         }
     }
 }
-
-
-                
-
