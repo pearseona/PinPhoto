@@ -69,7 +69,8 @@ struct RecordListView: View {
                             
                             NavigationLink(destination: RecordEditView(
                                 viewModel: viewModel,
-                                currentCoordinate: .init(latitude: record.latitude, longitude: record.longitude)
+                                currentCoordinate: .init(latitude: record.latitude, longitude: record.longitude),
+                                record: record
                             )) {
                                 HStack(spacing: 16) {
                                     if let data = record.imageData, let uiImage = UIImage(data: data) {

@@ -163,7 +163,8 @@ struct ContentView: View {
         .sheet(isPresented: $isShowingEditSheet) {
             RecordEditView(
                 viewModel: viewModel,
-                currentCoordinate: centerCoordinate
+                currentCoordinate: centerCoordinate,
+                record: nil
             )
         }
     }
