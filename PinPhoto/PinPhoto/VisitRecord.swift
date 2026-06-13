@@ -1,5 +1,22 @@
 import Foundation
 
+// 추억의 종류를 구분할 카데고리 열거형
+enum MemoryCategory: String, Codable, CaseIterable {
+    case food = "음식점"
+    case cafe = "카페"
+    case travel = "여행지"
+    case daily = "일상"
+    
+    var iconName: String {
+        switch self {
+        case .food: return "fork.knife"
+        case .cafe: return "cup.and.saucer.fill"
+        case .travel: return "globe.asia.australia.fill"
+        case .daily: return "heart.text.square.fill"
+        }
+    }
+}
+
 // 방문 곳을 지도에 핀으로 표시
 struct VisitRecord: Identifiable, Codable {
     
@@ -23,4 +40,6 @@ struct VisitRecord: Identifiable, Codable {
     
     // 기록된 날짜 및 시간
     let date: Date
+    
+    var category: MemoryCategory = .daily
 }

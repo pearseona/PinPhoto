@@ -38,7 +38,7 @@ class PinPhotoViewModel: ObservableObject {
     }
     
     // 새로운 추억 기록을 배열에 추가
-    func addRecord(title: String, latitude: Double, longitude: Double, memo: String, imageData: Data?) {
+    func addRecord(title: String, latitude: Double, longitude: Double, memo: String, imageData: Data?, category: MemoryCategory) {
         
         let location = CLLocation(latitude: latitude, longitude: longitude)
         let geocoder = CLGeocoder()
@@ -55,7 +55,6 @@ class PinPhotoViewModel: ObservableObject {
                 let city = placemark.administrativeArea ?? ""
                 let locality = placemark.locality ?? ""
                 let subLocality = placemark.subLocality ?? ""
-                                
                 let rawAddress = "\(city) \(locality) \(subLocality)"
                 let cleanedAddress = rawAddress.components(separatedBy: .whitespacesAndNewlines)
                     .filter { !$0.isEmpty }
@@ -76,7 +75,8 @@ class PinPhotoViewModel: ObservableObject {
                     title: title,
                     memo: memo,
                     imageData: imageData,
-                    date: Date() // 현재 기록하는 시점의 날짜/시간 저장
+                    date: Date(), // 현재 기록하는 시점의 날짜/시간 저장
+                    category: category
                 )
                 self.records.insert(newRecord, at: 0)
                 self.saveToUserDefaults()

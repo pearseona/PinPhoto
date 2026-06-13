@@ -112,7 +112,8 @@ struct RecordEditView: View {
                             latitude: targetLatitude,
                             longitude: targetLongitude,
                             memo: memoText,
-                            imageData: selectedImageData
+                            imageData: selectedImageData,
+                            category: .daily
                         )
                         presentationMode.wrappedValue.dismiss()
                     }
