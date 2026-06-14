@@ -85,6 +85,26 @@ class PinPhotoViewModel: ObservableObject {
         }
     }
     
+    // 기존 레코드 내용 수정 및 로컬 DB 동기화
+    func updateRecord(_ updatedRecord: VisitRecord) {
+        DispatchQueue.main.async {
+            if let index = self.records.firstIndex(where: { $0.id == updatedRecord.id }) {
+                self.records[index] = updatedRecord
+                self.saveToUserDefaults() // 변경된 데이터 영구 저장
+                print(" [ViewModel] 추억 레코드 수정 완료 및 로컬 DB 업데이트 성공: \(updatedRecord.title)")
+            }
+        }
+    }
+    
+    // 특정 인덱스의 레코드 제거 및 로컬 DB 동기화
+    func deleteRecord(at index: Int) {
+        guard index >= 0 && index < records.count else { return }
+        let removedTitle = records[index].title
+        records.remove(at: index)
+        saveToUserDefaults()
+        print(" [ViewModel] 레코드 삭제 완료 및 로컬 DB 동기화 성공: \(removedTitle)")
+    }
+    
     // 현재 메모리에 있는 records 배열을 JSON으로 직렬화하여 영구 저장
     private func saveToUserDefaults() {
         do {
