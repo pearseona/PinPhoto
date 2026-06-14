@@ -231,7 +231,7 @@ struct RecordEditView: View {
             UITextView.appearance().backgroundColor = .clear
             
             if let existingRecord = record {
-                titleText = existingRecord.title
+                titleText = existingRecord.title ?? ""
                 memoText = existingRecord.memo
                 selectedImageData = existingRecord.imageData
                 selectedCategory = existingRecord.category
