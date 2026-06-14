@@ -136,7 +136,7 @@ struct RecordEditView: View {
                                 Image(systemName: "mappin.circle.fill")
                                     .foregroundColor(deepOceanBlue)
                                     .font(.system(size: 16))
-                                Text(record?.address ?? "📍 위치 정보 분명")
+                                Text(record?.address ?? "📍 위치")
                                     .font(.system(size: 14, weight: .semibold))
                                     .foregroundColor(midnightText)
                             }
@@ -187,46 +187,49 @@ struct RecordEditView: View {
                 .padding()
             }
         }
-      
         .navigationBarTitle(record == nil ? "추억 기록하기" : (isEditMode ? "추억 수정하기" : "추억 상세보기"), displayMode: .inline)
-        .navigationBarItems(
-            leading: Button(isEditMode && record != nil ? "취소" : "닫기") {
-                if isEditMode && record != nil {
-                    withAnimation {
-                        isEditMode = false
+      
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(isEditMode && record != nil ? "취소" : "닫기") {
+                    if isEditMode && record != nil {
+                        withAnimation {
+                            isEditMode = false
+                        }
+                    } else {
+                        presentationMode.wrappedValue.dismiss()
                     }
-                } else {
-                    presentationMode.wrappedValue.dismiss()
                 }
+                .foregroundColor(.secondary)
             }
-            .foregroundColor(.secondary),
             
-            trailing: Group {
-                if record == nil {
-                    Button("저장") {
-                        saveAction()
-                    }
-                    .foregroundColor(deepOceanBlue)
-                    .font(.system(size: 17, weight: .bold))
-                    .disabled(memoText.isEmpty || selectedImageData == nil)
-                } else {
-                    if isEditMode {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Group {
+                    if record == nil {
                         Button("저장") {
                             saveAction()
                         }
                         .foregroundColor(deepOceanBlue)
                         .font(.system(size: 17, weight: .bold))
-                        .disabled(memoText.isEmpty || selectedImageData == nil)
+              
                     } else {
-                        Button("수정") {
-                            withAnimation { isEditMode = true }
+                        if isEditMode {
+                            Button("저장") {
+                                saveAction()
+                            }
+                            .foregroundColor(deepOceanBlue)
+                            .font(.system(size: 17, weight: .bold))
+                        } else {
+                            Button("수정") {
+                                withAnimation { isEditMode = true }
+                            }
+                            .foregroundColor(deepOceanBlue)
+                            .font(.system(size: 17, weight: .bold))
                         }
-                        .foregroundColor(deepOceanBlue)
-                        .font(.system(size: 17, weight: .bold))
                     }
                 }
             }
-        )
+        }
         .onAppear {
             UITextView.appearance().backgroundColor = .clear
             
@@ -264,7 +267,7 @@ struct RecordEditView: View {
             title: titleText.isEmpty ? "제목 없음" : titleText,
             latitude: targetLatitude,
             longitude: targetLongitude,
-            memo: memoText,
+            memo: memoText.isEmpty ? "추가된 메모가 없습니다." : memoText, // 비어있을 때 백엔드 예외 가드 가동
             imageData: selectedImageData,
             category: selectedCategory
         )

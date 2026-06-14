@@ -170,11 +170,14 @@ struct ContentView: View {
             }
         }
         .sheet(isPresented: $isShowingEditSheet) {
-            RecordEditView(
-                viewModel: viewModel,
-                currentCoordinate: centerCoordinate,
-                record: nil
-            )
+            NavigationView {
+                RecordEditView(
+                    viewModel: viewModel,
+                    currentCoordinate: centerCoordinate,
+                    record: nil
+                )
+            }
+ 
         }
     }
 }
