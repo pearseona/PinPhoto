@@ -37,7 +37,7 @@ struct RecordRowView: View {
             VStack(alignment: .leading, spacing: 5) {
                 
                 // 제목
-                Text(record.title.isEmpty ? "제목 없음" : record.title)
+                Text((record.title?.isEmpty ?? true) ? "제목 없음" : (record.title ?? "제목 없음"))
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(midnightText)
                     .lineLimit(1)

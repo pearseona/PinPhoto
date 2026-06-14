@@ -7,6 +7,8 @@ class PinPhotoViewModel: ObservableObject {
     
     @Published var records: [VisitRecord] = []
     @Published var selectedTab: Int = 0
+
+    @Published var searchedCoordinate: CLLocationCoordinate2D? = nil
     
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.5824, longitude: 127.0103),
@@ -16,9 +18,7 @@ class PinPhotoViewModel: ObservableObject {
     private let userDefaultsKey = "PinPhoto_VisitRecords"
     
     init() {
-        
         self.selectedTab = 0
-        
         loadFromUserDefaults()
         
         DispatchQueue.main.async {
@@ -28,13 +28,18 @@ class PinPhotoViewModel: ObservableObject {
     
     // 특정 기록 위치로 지도 이동 및 탭 전환
     func moveMapTo(record: VisitRecord) {
-        
-        self.region = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: record.latitude, longitude: record.longitude),
-            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-        )
-        self.selectedTab = 0
-        print(" [ViewModel] '\(record.title)' 위치로 지도 시점 이동 및 탭 전환 완료!")
+        DispatchQueue.main.async {
+            // 지도 영역의 한가운데로 카메라 시점 동기화
+            self.region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: record.latitude, longitude: record.longitude),
+                span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+            )
+            // 검색 좌표도 함께 바인딩 업데이트
+            self.searchedCoordinate = CLLocationCoordinate2D(latitude: record.latitude, longitude: record.longitude)
+            
+            self.selectedTab = 0
+            print(" [ViewModel] '\(record.title)' 위치로 지도 시점 이동 및 탭 전환 완료!")
+        }
     }
     
     // 새로운 추억 기록을 배열에 추가
@@ -59,7 +64,7 @@ class PinPhotoViewModel: ObservableObject {
                 let cleanedAddress = rawAddress.components(separatedBy: .whitespacesAndNewlines)
                     .filter { !$0.isEmpty }
                     .joined(separator: " ")
-                                
+                                        
                 if !cleanedAddress.isEmpty {
                     parsedAddress = cleanedAddress
                 }
