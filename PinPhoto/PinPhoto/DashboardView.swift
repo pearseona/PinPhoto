@@ -23,7 +23,14 @@ struct DashboardView: View {
     // 가장 많이 방문한 카테고리 TOP 3 추출 로직
     var topCategories: [(key: MemoryCategory, value: Int)] {
         let grouped = Dictionary(grouping: viewModel.records) { $0.category }
-        let sorted = grouped.mapValues { $0.count }.sorted { $0.value > $1.value }
+        
+        let sorted = grouped.mapValues { $0.count }.sorted { (a, b) -> Bool in
+            if a.value != b.value {
+                return a.value > b.value // 방문 횟수가 많은 순
+            } else {
+                return a.key.rawValue < b.key.rawValue // 횟수가 같으면 가나다순으로 고정
+            }
+        }
         return Array(sorted.prefix(3))
     }
     
@@ -32,14 +39,14 @@ struct DashboardView: View {
             ScrollView {
                 VStack(spacing: 22) {
                     
-                    // 카드 1: 이번 달 요약 리포트
+                    // 이번 달 요약 리포트
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("📅 이달의 발자국 리포트")
+                        Text("📅 발자국 리포트")
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(.secondary)
                         
                         HStack {
-                            Text("이번 달에 쌓은 추억")
+                            Text("현재 쌓은 추억")
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(midnightText)
                             Spacer()
@@ -52,7 +59,7 @@ struct DashboardView: View {
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(16)
                     
-                    // 카드 2: 카테고리 선호도 TOP 3
+                    // 카테고리 선호도 TOP 3
                     VStack(alignment: .leading, spacing: 16) {
                         Text("🏆 내가 가장 많이 찾은 테마 TOP 3")
                             .font(.system(size: 14, weight: .bold))

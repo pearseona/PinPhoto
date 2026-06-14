@@ -35,8 +35,6 @@ struct RecordListView: View {
                     List {
                         ForEach(filteredRecords) { record in
                             
-                            // 🟢 [버전 억까 소멸 피스]: 모든 SwiftUI 버전에서 컴파일러가 무조건 대만족하고 패스하는
-                            // 명시적 'destination:' 및 'label:' 구형 파라미터 매핑 조합으로 안전하게 교정 완료했습니다!
                             NavigationLink(
                                 destination: RecordEditView(
                                     viewModel: viewModel,
@@ -45,7 +43,7 @@ struct RecordListView: View {
                                 )
                                 .navigationBarBackButtonHidden(true),
                                 label: {
-                                    // 기존 선아님 리스트 로우 디자인 컨텐츠 (100% 원본 완벽 보존)
+                                    
                                     HStack(spacing: 16) {
                                         if let data = record.imageData, let uiImage = UIImage(data: data) {
                                             Image(uiImage: uiImage)
@@ -183,6 +181,7 @@ struct RecordListView: View {
         .shadow(color: Color.black.opacity(0.04), radius: 5, x: 0, y: 3)
     }
     
+    // 데이터 삭제 처리
     private func deleteRecord(at offsets: IndexSet) {
         for index in offsets {
             let recordToDelete = filteredRecords[index]
@@ -193,11 +192,16 @@ struct RecordListView: View {
         }
     }
     
+    // 필터링 및 검색 로직
     var filteredRecords: [VisitRecord] {
         var records = viewModel.records
+        
+        // 카테고리 필터 적용
         if let category = selectedFilterCategory {
             records = records.filter { $0.category == category }
         }
+        
+        // 제목/메모 키워드 기반 검색
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         if !query.isEmpty {
             records = records.filter { record in

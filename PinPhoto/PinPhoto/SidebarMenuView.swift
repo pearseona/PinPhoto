@@ -64,7 +64,7 @@ struct SidebarMenuView: View {
                     
                     // 메뉴 리스트 영역
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("추억 분석 및 고도화")
+                        Text("추억 탐색")
                             .font(.system(size: 12, weight: .bold))
                             .foregroundColor(.secondary)
                             .padding(.bottom, 4)

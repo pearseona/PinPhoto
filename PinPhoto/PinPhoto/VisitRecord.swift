@@ -88,8 +88,8 @@ enum MemoryCategory: String, Codable, CaseIterable {
     var iconName: String {
         switch self {
         case .food: return "fork.knife"
-        case .culture: return "ticker.fill"
-        case .travel: return "globe.asia.australia.fill"
+        case .culture: return "theatermasks.fill"
+        case .travel: return "airplane.departure"
         case .daily: return "heart.text.square.fill"
         }
     }

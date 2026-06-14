@@ -8,6 +8,7 @@ struct CustomMapView: UIViewRepresentable {
     @Binding var searchedCoordinate: CLLocationCoordinate2D?
     @Binding var centerCoordinate: CLLocationCoordinate2D
     
+    // 시간순 정렬된 좌표 리스트
     var sortedCoordinates: [CLLocationCoordinate2D] {
         return viewModel.records
             .sorted(by: { $0.date < $1.date })
@@ -21,24 +22,27 @@ struct CustomMapView: UIViewRepresentable {
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
         mapView.delegate = context.coordinator
-        mapView.showsUserLocation = true
+        mapView.showsUserLocation = true // 현재 위치 표시
         return mapView
     }
     
+    // 뷰 업데이트 로직
     func updateUIView(_ uiView: MKMapView, context: Context) {
         uiView.removeOverlays(uiView.overlays)
         uiView.removeAnnotations(uiView.annotations)
         
-       
+       // 모든 기록 데이터 핀 추가
         let annotations = viewModel.records.map { $0 as MKAnnotation }
         uiView.addAnnotations(annotations)
         
+        // 시간순으로 동선 그리기
         let coords = sortedCoordinates
         if coords.count >= 2 {
             let polyline = MKPolyline(coordinates: coords, count: coords.count)
             uiView.addOverlay(polyline)
         }
         
+        // 검색된 위치로 지도 중심 이동
         if let searchTarget = searchedCoordinate {
             let customSpan = MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008)
             let region = MKCoordinateRegion(center: searchTarget, span: customSpan)
@@ -51,6 +55,7 @@ struct CustomMapView: UIViewRepresentable {
         }
     }
     
+    // Map Delegate
     class Coordinator: NSObject, MKMapViewDelegate {
         var parent: CustomMapView
         private var hasInitialZoomed = false
@@ -59,12 +64,14 @@ struct CustomMapView: UIViewRepresentable {
             self.parent = parent
         }
         
+        // 지도 움직일 때마다 중심 좌표 업데이트
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
             DispatchQueue.main.async {
                 self.parent.centerCoordinate = mapView.centerCoordinate
             }
         }
         
+        // 초기 사용자의 위치로 자동 줌
         func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
             if !hasInitialZoomed {
                 let userSpan = MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008)
@@ -74,6 +81,7 @@ struct CustomMapView: UIViewRepresentable {
             }
         }
         
+        // 동선 렌더링
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             if let polyline = overlay as? MKPolyline {
                 let renderer = MKPolylineRenderer(polyline: polyline)
@@ -86,6 +94,7 @@ struct CustomMapView: UIViewRepresentable {
             return MKOverlayRenderer()
         }
         
+        // 커스텀 핀 디자인
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             if annotation is MKUserLocation { return nil }
             

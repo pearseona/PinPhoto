@@ -5,7 +5,6 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     private let manager = CLLocationManager()
     
-    // 뷰에서 감지할 수 있도록 현재 위치를 @Published로 선언
     @Published var location: CLLocation?
     
     override init() {

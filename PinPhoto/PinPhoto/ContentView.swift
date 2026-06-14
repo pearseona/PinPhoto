@@ -169,6 +169,7 @@ struct ContentView: View {
                     .transition(.move(edge: .leading))
             }
         }
+        // 기록 작성 시트 호출
         .sheet(isPresented: $isShowingEditSheet) {
             NavigationView {
                 RecordEditView(
