@@ -346,8 +346,8 @@ PinPhoto
 
 안정적인 릴리즈 관리와 효율적인 병렬 개발을 수행하기 위해 표준 Git-Flow에 입각한 브랜칭 규칙을 운용했습니다.
 
-* **`main`**: 상용 릴리즈 배포 브랜치 (출시용 빌드 산출)
-* **`develop`**: 개발 메인 통합 브랜치 (기능이 병합되고 통합 테스트 진행)
+* **`main`**: 상용 릴리즈 배포 브랜치 
+* **`develop`**: 개발 메인 통합 브랜치 
 * **`feature/*`**: 작업 단위별 독립 개발 브랜치
   * `feature/1-map`: MapKit 커스텀 핀 구현 및 CoreLocation 권한 바인딩
   * `feature/2-location-search`: Nominatim API 기반의 비동기 지오코딩 장소 검색 구현
